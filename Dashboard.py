@@ -8,7 +8,7 @@ st.set_page_config(page_title="Superstore Dashboard",page_icon="📊",layout="wi
 
 @st.cache_data(ttl=600)
 def load_data():
-    df=pd.read_csv(r"C:\Users\Swala Nasar\OneDrive\Super Store\output\superstore_clean.csv",parse_dates=["Order Date","Ship Date"])
+    df=pd.read_csv("data\superstore_clean.csv",parse_dates=["Order Date","Ship Date"])
     return df
 
 
@@ -33,6 +33,9 @@ filtered = df[df["Region"].isin(regions) & df["Order Year"].isin(years)]
 if submitted:
     filtered= filtered(filtered["Order Date"].dt.date.between(start,end))
 st.write(f"showing {len(filtered):,} rows")
+st.sidebar.divider()
+csv_bytes=filtered.to_csv(index=False).encode("utf-8")
+st.sidebar.download_button("download filtered data",data=csv_bytes,file_name="superstore_filtered.csv",mime="text/csv")
 
 disc_arr = filtered['Discount'].values
 sales_arr = filtered['Sales'].values
